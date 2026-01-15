@@ -1,0 +1,22 @@
+{
+  "name": "perini-burger",
+  "version": "1.0.0",
+  "description": "Site Perini Burger com checkout integrado e pagamento PIX",
+  "main": "index.js",
+  "scripts": {
+    "build": "echo 'No build required'",
+    "dev": "netlify dev",
+    "deploy": "netlify deploy --prod"
+  },
+  "keywords": [
+    "burger",
+    "food",
+    "pix",
+    "checkout"
+  ],
+  "author": "Perini Burger",
+  "license": "ISC",
+  "dependencies": {
+    "qrcode": "^1.5.4"
+  }
+}
