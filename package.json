@@ -1,7 +1,7 @@
 {
-  "name": "perini-burger",
+  "name": "art-burger",
   "version": "1.0.0",
-  "description": "Site Perini Burger com checkout integrado e pagamento PIX",
+  "description": "Site Art Burger com checkout integrado e pagamento PIX",
   "main": "index.js",
   "scripts": {
     "build": "echo 'No build required'",
@@ -14,7 +14,7 @@
     "pix",
     "checkout"
   ],
-  "author": "Perini Burger",
+  "author": "Art Burger",
   "license": "ISC",
   "dependencies": {
     "qrcode": "^1.5.4"

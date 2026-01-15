@@ -58,7 +58,7 @@ function injectCheckoutModal() {
             <header class="checkout-header">
                 <div class="checkout-logo">
                     <i class="fas fa-burger"></i>
-                    Perini Burger - Checkout
+                    Art Burger - Checkout
                 </div>
                 <button class="checkout-close" onclick="closeCheckout()">
                     <i class="fas fa-times"></i>

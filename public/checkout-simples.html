@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art Burger - Checkout</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: #EA1D2C;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+
+        .checkout-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+        }
+
+        .checkout-main {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .checkout-sidebar {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            gap: 15px;
+        }
+
+        .step-number {
+            background: #EA1D2C;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .step-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #EA1D2C;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #EA1D2C;
+            box-shadow: 0 0 0 2px rgba(234, 29, 44, 0.1);
+        }
+
+        .product-card {
+            border: 2px solid #EA1D2C;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .product-card img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .product-info h3 {
+            margin-bottom: 5px;
+            color: #EA1D2C;
+        }
+
+        .product-price {
+            font-size: 18px;
+            font-weight: bold;
+            color: #EA1D2C;
+            margin-top: 10px;
+        }
+
+        .items-list {
+            margin-bottom: 20px;
+        }
+
+        .item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .item label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0;
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .item input[type="checkbox"],
+        .item input[type="radio"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .qty-control {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: #f0f0f0;
+            padding: 3px 6px;
+            border-radius: 4px;
+        }
+
+        .qty-control button {
+            background: none;
+            border: none;
+            color: #EA1D2C;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0 3px;
+        }
+
+        .qty-control input {
+            width: 30px;
+            text-align: center;
+            border: none;
+            background: none;
+            font-weight: bold;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #EA1D2C;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #d91a26;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(234, 29, 44, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #EA1D2C;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #EA1D2C;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .summary-total {
+            border-top: 2px solid #ddd;
+            padding-top: 10px;
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #EA1D2C;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .qr-container {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .qr-container img {
+            width: 256px;
+            height: 256px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .pix-code-box {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            margin: 15px 0;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .pix-code-box input {
+            flex: 1;
+            border: none;
+            background: none;
+            font-family: monospace;
+            font-size: 11px;
+        }
+
+        .pix-code-box button {
+            background: #EA1D2C;
+            color: white;
+            padding: 6px 12px;
+            flex: 0;
+            width: auto;
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            font-size: 13px;
+        }
+
+        .alert-info {
+            background: #e3f2fd;
+            color: #1976d2;
+            border-left: 4px solid #1976d2;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            color: #388e3c;
+            border-left: 4px solid #388e3c;
+        }
+
+        .alert-error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #c62828;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #EA1D2C;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .success-message i {
+            font-size: 50px;
+            color: #4caf50;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .success-message h2 {
+            color: #4caf50;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .checkout-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .checkout-sidebar {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍔 Art Burger</h1>
+            <p>Checkout Online</p>
+        </header>
+
+        <div class="checkout-wrapper">
+            <div class="checkout-main">
+                <!-- STEP 1: PRODUTO E ADICIONAIS -->
+                <div class="step active" id="step1">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Escolha seu Pedido</div>
+                    </div>
+
+                    <div class="product-card">
+                        <img id="productImage" src="images/cover.png" alt="Produto">
+                        <div class="product-info">
+                            <h3 id="productName">Combo Casal</h3>
+                            <p id="productDesc">2 Hambúrgueres + Batata Especial 500g + 2 Refrigerantes 350ml</p>
+                            <div class="product-price">R$ <span id="productPrice">39.90</span></div>
+                        </div>
+                    </div>
+
+                    <h4 style="margin-bottom: 10px;">Adicionais (máximo 2)</h4>
+                    <div class="items-list" id="additionalsList"></div>
+
+                    <h4 style="margin-bottom: 10px;">Bebidas (obrigatório)</h4>
+                    <div class="items-list" id="drinksList"></div>
+
+                    <div class="buttons">
+                        <button class="btn-primary" onclick="nextStep()">Continuar</button>
+                    </div>
+                </div>
+
+                <!-- STEP 2: DADOS DE ENTREGA -->
+                <div class="step" id="step2">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Dados de Entrega</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nome Completo *</label>
+                        <input type="text" id="customerName" placeholder="João Silva">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="customerEmail" placeholder="joao@example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label>CPF *</label>
+                        <input type="text" id="customerCPF" placeholder="000.000.000-00" maxlength="14">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Telefone (com DDD) *</label>
+                        <input type="tel" id="customerPhone" placeholder="(11) 99999-9999">
+                    </div>
+
+                    <div class="form-group">
+                        <label>CEP *</label>
+                        <input type="text" id="customerZipCode" placeholder="00000-000" maxlength="9">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Rua *</label>
+                        <input type="text" id="customerAddress" placeholder="Avenida Paulista">
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div class="form-group">
+                            <label>Número *</label>
+                            <input type="text" id="customerNumber" placeholder="1000">
+                        </div>
+                        <div class="form-group">
+                            <label>Bairro *</label>
+                            <input type="text" id="customerNeighborhood" placeholder="Bela Vista">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Complemento</label>
+                        <input type="text" id="customerComplement" placeholder="Apto 101">
+                    </div>
+
+                    <div class="buttons">
+                        <button class="btn-secondary" onclick="previousStep()">Voltar</button>
+                        <button class="btn-primary" onclick="nextStep()">Ir para Pagamento</button>
+                    </div>
+                </div>
+
+                <!-- STEP 3: PAGAMENTO -->
+                <div class="step" id="step3">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Pagamento via PIX</div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Escaneie o QR Code abaixo ou copie o código PIX para realizar o pagamento.</span>
+                    </div>
+
+                    <div class="loading" id="loadingContainer" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Gerando QR Code...</p>
+                    </div>
+
+                    <div class="qr-container" id="qrContainer" style="display: none;">
+                        <img id="qrImage" src="" alt="QR Code PIX">
+                        <p style="color: #666; font-size: 12px; margin-top: 10px;">Escaneie com seu celular</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Código Copia e Cola</label>
+                        <div class="pix-code-box">
+                            <input type="text" id="pixCode" readonly>
+                            <button onclick="copyPixCode()" style="flex: 0; width: auto;">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Após realizar o pagamento, seu pedido será confirmado automaticamente.</span>
+                    </div>
+
+                    <div class="buttons">
+                        <button class="btn-secondary" onclick="previousStep()">Voltar</button>
+                        <button class="btn-primary" onclick="finalizePurchase()">Finalizar Compra</button>
+                    </div>
+                </div>
+
+                <!-- SUCCESS -->
+                <div class="step" id="stepSuccess">
+                    <div class="success-message">
+                        <i class="fas fa-check-circle"></i>
+                        <h2>Pedido Confirmado!</h2>
+                        <p>Seu pedido foi recebido com sucesso.</p>
+                        <p id="successMessage"></p>
+                        <button class="btn-primary" onclick="location.reload()" style="margin-top: 20px; width: 200px;">Fazer Novo Pedido</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SIDEBAR -->
+            <div class="checkout-sidebar">
+                <div class="sidebar-title">Resumo do Pedido</div>
+                <div id="summaryContent"></div>
+                <div class="summary-total">
+                    <span>Total:</span>
+                    <span>R$ <span id="totalPrice">0.00</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.js"></script>
+    <script>
+        const ADDITIONALS = [
+            { id: 1, name: 'Anel de Cebola', price: 0 },
+            { id: 2, name: 'Queijo Provolone', price: 0 },
+            { id: 3, name: 'Queijo Cheddar', price: 0 },
+            { id: 4, name: 'Bacon', price: 0 }
+        ];
+
+        const DRINKS = [
+            { id: 5, name: 'Guaraná Antartica 2L', price: 0 },
+            { id: 6, name: 'Coca-Cola 2L', price: 0 },
+            { id: 7, name: 'Fanta Laranja 2L', price: 0 }
+        ];
+
+        let state = {
+            currentStep: 1,
+            product: { name: 'Combo Casal', price: 39.90, image: 'images/cover.png', desc: '2 Hambúrgueres + Batata Especial 500g + 2 Refrigerantes 350ml' },
+            additionals: new Map(),
+            drinks: new Map(),
+            customer: {}
+        };
+
+        function initializeCheckout() {
+            renderAdditionals();
+            renderDrinks();
+            updateSummary();
+        }
+
+        function renderAdditionals() {
+            const list = document.getElementById('additionalsList');
+            list.innerHTML = ADDITIONALS.map(item => `
+                <div class="item">
+                    <label>
+                        <input type="checkbox" value="${item.id}" onchange="toggleAdditional(${item.id})">
+                        <span>${item.name}</span>
+                    </label>
+                    <div class="qty-control">
+                        <button onclick="decrementAdditional(${item.id})">−</button>
+                        <input type="text" value="0" readonly id="qty-${item.id}">
+                        <button onclick="incrementAdditional(${item.id})">+</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderDrinks() {
+            const list = document.getElementById('drinksList');
+            list.innerHTML = DRINKS.map(item => `
+                <div class="item">
+                    <label>
+                        <input type="radio" name="drinks" value="${item.id}" onchange="selectDrink(${item.id})">
+                        <span>${item.name}</span>
+                    </label>
+                </div>
+            `).join('');
+        }
+
+        function toggleAdditional(id) {
+            const checkbox = document.querySelector(`input[value="${id}"]`);
+            if (checkbox.checked) {
+                if (state.additionals.size < 2) {
+                    state.additionals.set(id, 1);
+                    document.getElementById(`qty-${id}`).value = '1';
+                } else {
+                    checkbox.checked = false;
+                    alert('Máximo 2 adicionais');
+                }
+            } else {
+                state.additionals.delete(id);
+                document.getElementById(`qty-${id}`).value = '0';
+            }
+            updateSummary();
+        }
+
+        function incrementAdditional(id) {
+            if (!state.additionals.has(id)) {
+                if (state.additionals.size < 2) {
+                    state.additionals.set(id, 1);
+                    document.querySelector(`input[value="${id}"]`).checked = true;
+                } else {
+                    alert('Máximo 2 adicionais');
+                    return;
+                }
+            } else {
+                state.additionals.set(id, state.additionals.get(id) + 1);
+            }
+            document.getElementById(`qty-${id}`).value = state.additionals.get(id);
+            updateSummary();
+        }
+
+        function decrementAdditional(id) {
+            if (state.additionals.has(id)) {
+                const qty = state.additionals.get(id) - 1;
+                if (qty <= 0) {
+                    state.additionals.delete(id);
+                    document.querySelector(`input[value="${id}"]`).checked = false;
+                    document.getElementById(`qty-${id}`).value = '0';
+                } else {
+                    state.additionals.set(id, qty);
+                    document.getElementById(`qty-${id}`).value = qty;
+                }
+            }
+            updateSummary();
+        }
+
+        function selectDrink(id) {
+            state.drinks.clear();
+            state.drinks.set(id, 1);
+            updateSummary();
+        }
+
+        function updateSummary() {
+            let summary = `<div class="summary-item"><strong>${state.product.name}</strong></div>`;
+
+            state.additionals.forEach((qty, id) => {
+                const item = ADDITIONALS.find(a => a.id === id);
+                if (item) summary += `<div class="summary-item"><span>${item.name} x${qty}</span></div>`;
+            });
+
+            state.drinks.forEach((qty, id) => {
+                const item = DRINKS.find(d => d.id === id);
+                if (item) summary += `<div class="summary-item"><span>🥤 ${item.name}</span></div>`;
+            });
+
+            document.getElementById('summaryContent').innerHTML = summary;
+
+            let total = state.product.price;
+            state.additionals.forEach((qty, id) => {
+                const item = ADDITIONALS.find(a => a.id === id);
+                if (item) total += item.price * qty;
+            });
+            state.drinks.forEach((qty, id) => {
+                const item = DRINKS.find(d => d.id === id);
+                if (item) total += item.price * qty;
+            });
+
+            document.getElementById('totalPrice').textContent = total.toFixed(2);
+        }
+
+        function nextStep() {
+            if (state.currentStep === 1) {
+                if (state.drinks.size === 0) {
+                    alert('Selecione uma bebida');
+                    return;
+                }
+                state.currentStep = 2;
+            } else if (state.currentStep === 2) {
+                if (!validateForm()) return;
+                state.currentStep = 3;
+                generatePix();
+            }
+            showStep();
+        }
+
+        function previousStep() {
+            if (state.currentStep > 1) {
+                state.currentStep--;
+                showStep();
+            }
+        }
+
+        function showStep() {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step${state.currentStep}`).classList.add('active');
+        }
+
+        function validateForm() {
+            state.customer = {
+                name: document.getElementById('customerName').value.trim(),
+                email: document.getElementById('customerEmail').value.trim(),
+                cpf: document.getElementById('customerCPF').value.trim(),
+                phone: document.getElementById('customerPhone').value.trim(),
+                zipcode: document.getElementById('customerZipCode').value.trim(),
+                address: document.getElementById('customerAddress').value.trim(),
+                number: document.getElementById('customerNumber').value.trim(),
+                neighborhood: document.getElementById('customerNeighborhood').value.trim(),
+                complement: document.getElementById('customerComplement').value.trim()
+            };
+
+            if (!state.customer.name || !state.customer.email || !state.customer.cpf || 
+                !state.customer.phone || !state.customer.zipcode || !state.customer.address || 
+                !state.customer.number || !state.customer.neighborhood) {
+                alert('Preencha todos os campos obrigatórios');
+                return false;
+            }
+
+            if (!state.customer.email.includes('@')) {
+                alert('Email inválido');
+                return false;
+            }
+
+            if (state.customer.cpf.replace(/\D/g, '').length !== 11) {
+                alert('CPF inválido');
+                return false;
+            }
+
+            return true;
+        }
+
+        async function generatePix() {
+            document.getElementById('loadingContainer').style.display = 'block';
+            document.getElementById('qrContainer').style.display = 'none';
+
+            try {
+                let total = state.product.price;
+                state.additionals.forEach((qty, id) => {
+                    const item = ADDITIONALS.find(a => a.id === id);
+                    if (item) total += item.price * qty;
+                });
+                state.drinks.forEach((qty, id) => {
+                    const item = DRINKS.find(d => d.id === id);
+                    if (item) total += item.price * qty;
+                });
+
+                const phoneClean = state.customer.phone.replace(/\D/g, '');
+                const phoneFormatted = '+55' + phoneClean;
+
+                const payload = {
+                    token: 'b9eb34f2-dafa-41da-97fc-338b2061aa7d',
+                    secret: '6d4e99b2-4dcd-46f7-864d-094c468b6032',
+                    amount: total,
+                    debtor_name: state.customer.name,
+                    email: state.customer.email,
+                    debtor_document_number: state.customer.cpf,
+                    phone: phoneFormatted,
+                    method_pay: 'pix'
+                };
+
+                console.log('Enviando:', payload);
+
+                const response = await fetch('http://localhost:3001/api/generate-pix', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                console.log('Resposta:', data);
+
+                if (data.success && data.data.qr_code) {
+                    document.getElementById('pixCode').value = data.data.qr_code;
+                    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=${encodeURIComponent(data.data.qr_code)}`;
+                    document.getElementById('qrImage').src = qrUrl;
+                    document.getElementById('loadingContainer').style.display = 'none';
+                    document.getElementById('qrContainer').style.display = 'block';
+                } else {
+                    throw new Error(data.error || 'Erro ao gerar PIX');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                document.getElementById('loadingContainer').style.display = 'none';
+                alert('Erro ao gerar PIX: ' + error.message);
+            }
+        }
+
+        function copyPixCode() {
+            const code = document.getElementById('pixCode').value;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('Código copiado!');
+            });
+        }
+
+        function finalizePurchase() {
+            Swal.fire({
+                title: 'Confirmar Pedido',
+                text: 'Você realizou o pagamento via PIX?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sim!',
+                cancelButtonText: 'Cancelar'
+            }).then(result => {
+                if (result.isConfirmed) {
+                    let total = state.product.price;
+                    state.additionals.forEach((qty, id) => {
+                        const item = ADDITIONALS.find(a => a.id === id);
+                        if (item) total += item.price * qty;
+                    });
+                    state.drinks.forEach((qty, id) => {
+                        const item = DRINKS.find(d => d.id === id);
+                        if (item) total += item.price * qty;
+                    });
+
+                    document.getElementById('successMessage').innerHTML = `
+                        <strong>Endereço:</strong><br>
+                        ${state.customer.address}, ${state.customer.number} - ${state.customer.neighborhood}<br>
+                        ${state.customer.zipcode}<br><br>
+                        <strong>Total:</strong> R$ ${total.toFixed(2)}<br>
+                        <strong>Telefone:</strong> ${state.customer.phone}
+                    `;
+
+                    state.currentStep = 'success';
+                    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+                    document.getElementById('stepSuccess').classList.add('active');
+                }
+            });
+        }
+
+        initializeCheckout();
+    </script>
+</body>
+</html>
